@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    {% comment %} <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> {% endcomment %}
+
+    <title>Meus Carros</title>
+  </head>
+
+  {% block content %}
+  <body>
+    {% comment %} {% include 'navbar.html' %} {% endcomment %}
+    {% for car in cars %}
+        <h1>Carro: {{car.brand}} - {{car.model}} - {{car.factory_year}}</h1>
+    {% endfor %}
+
+
+
+  </body>
+
+  {% endblock %}
+</html>
