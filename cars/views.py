@@ -2,26 +2,76 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from cars.models import Car
 from cars.forms import CarModelForm
+from django.views import View
+from django.views.generic import ListView
 
 
-def cars_view(request):    
-    cars = Car.objects.all().order_by('brand__name')     
-    search = request.GET.get('search') 
-    if search:
-        cars = Car.objects.filter(model__icontains=search)        
+# CLASS BASED VIEW:
 
-    return render(request, 'cars.html', {'cars': cars})
+# # Usando a View
+# class CarsView(View):
+
+#     def get(self,request):
+#         cars = Car.objects.all().order_by('brand__name')     
+#         search = request.GET.get('search') 
+#         if search:
+#             cars = Car.objects.filter(model__icontains=search)        
+
+#         return render(request, 'cars.html', {'cars': cars})
+    
+# Melhorando a CarsView utilizando ListView
+class CarsListView(ListView):
+    model = Car
+    template_name = 'cars.html'
+    context_object_name = 'cars'
+
+    # Usado para filtrar
+    def get_queryset(self):
+        queryset =  super().get_queryset().order_by('model')
+        search = self.request.GET.get('search')
+        if search:
+            queryset = queryset.filter(model__icontains=search) 
+        return queryset   
 
 
-def new_car_view(request):
-    if request.method == 'POST':
+class NewCarView(View):
+
+    def get(self, request):
+        new_car_form = CarModelForm()
+        return render (request, 'new-car.html', {'new_car_form':new_car_form})
+    
+    def post(self,request):
         new_car_form = CarModelForm(request.POST, request.FILES)
         if new_car_form.is_valid():
             new_car_form.save()
             return redirect('cars_list')
-    else:
-        new_car_form = CarModelForm()
-    return render (request, 'new-car.html', {'new_car_form':new_car_form})
+        return render (request, 'new-car.html', {'new_car_form':new_car_form})
+
+
+
+# FUNCTION BASED VIEW:
+
+# def cars_view(request):    
+#     cars = Car.objects.all().order_by('brand__name')     
+#     search = request.GET.get('search') 
+#     if search:
+#         cars = Car.objects.filter(model__icontains=search)        
+
+#     return render(request, 'cars.html', {'cars': cars})
+
+
+
+
+
+# def new_car_view(request):
+#     if request.method == 'POST':
+#         new_car_form = CarModelForm(request.POST, request.FILES)
+#         if new_car_form.is_valid():
+#             new_car_form.save()
+#             return redirect('cars_list')
+#     else:
+#         new_car_form = CarModelForm()
+#     return render (request, 'new-car.html', {'new_car_form':new_car_form})
 
 
 
