@@ -13,11 +13,13 @@ class CarModelForm(forms.ModelForm):
         if value < 15000:
             # self é o proprio formulário 
             self.add_error('value', 'Valor mínimo do carro deve ser de R$20.000,00')
+        return value
             
     def clean_factory_year(self):
         factory_year = self.cleaned_data.get('factory_year')
         if factory_year < 1950:
             self.add_error('factory_year', 'Não é possível cadastrar veículos fabricados antes de 1950')
+        return factory_year
             
 
 

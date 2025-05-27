@@ -2,8 +2,11 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from cars.models import Car
 from cars.forms import CarModelForm
+from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, CreateView, DetailView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
 # CLASS BASED VIEW:
@@ -32,6 +35,11 @@ class CarsListView(ListView):
         if search:
             queryset = queryset.filter(model__icontains=search) 
         return queryset   
+    
+class CarDetailView(DetailView):
+    model = Car
+    template_name = 'car-detail.html'
+    
 
 
 # class NewCarView(View):
@@ -47,7 +55,7 @@ class CarsListView(ListView):
 #             return redirect('cars_list')
 #         return render (request, 'new-car.html', {'new_car_form':new_car_form})
     
-
+@method_decorator(login_required(login_url='login'), name='dispatch')
 class NewCarCreateView(CreateView):
     model = Car
     form_class = CarModelForm
@@ -55,9 +63,23 @@ class NewCarCreateView(CreateView):
     success_url = '/cars/' # manda o usuario pra lista de carros, success_url é como se fosse o return redirect
 
 
-class CarDetailView(DetailView):
+@method_decorator(login_required(login_url='login'), name='dispatch')
+class CarUpdateView(UpdateView):
     model = Car
-    template_name = 'car-detail.html'
+    form_class = CarModelForm
+    template_name = 'car-update.html'
+    # success_url = '/cars/'
+
+    def get_success_url(self):
+        return reverse_lazy('car_detail', kwargs={'pk': self.object.pk})
+
+
+@method_decorator(login_required(login_url='login'), name='dispatch')
+class CarDeleteView(DeleteView):
+    model = Car
+    template_name = 'car-delete.html'
+    success_url = '/cars/'
+
 
 
 
