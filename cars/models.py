@@ -20,6 +20,7 @@ class Car(models.Model):
     model_year = models.IntegerField(blank=True, null=True)
     value = models.FloatField(blank=True, null=True) # blank=True e null=True significa que ao criar um novo modelo de carro posso deixar esse campo vazio
     photo = models.ImageField(upload_to='cars/', blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.model
