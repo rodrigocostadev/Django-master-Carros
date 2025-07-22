@@ -2,8 +2,3 @@
 USER: rodrigo.costa
 PASSWORD: senhafacil
 
-teste
-
-para limpar historico:
-
-git rm -r --cached .env venvproject/
